@@ -1,0 +1,603 @@
+
+Collections.size()
+list.size()
+String str, str.length()
+int[] integerarray.length //length is a final variable applicable for arrays. With the help of length variable, we can obtain the size of the array.
+
+
+
+// Conversions
+
+Integer[] to int[]  : Arrays.stream(integerobjectarray).mapToInt(Integer::intValue).toArray();
+
+int[] to Integer[]  : Arrays.stream(primitiveintarray).boxed().toArray(Integer[]::new);
+
+List to int[]       : mylist.stream().mapToInt(Integer::intValue).toArray();
+
+List to Integer[]   : myList.stream().toArray(Integer[]::new);
+
+int[] to List       : Arrays.stream(primitiveintarray).boxed().collect(Collectors.toList());
+
+Integer[] to List   : Arrays.asList(integerobjectarray);
+
+// String <-> Character - List<Character>
+
+String to List          : mystring.chars().mapToObj(e -> (char)e).collect(Collectors.toList());
+
+List to String          : charlist.stream().map(e->e.toString()).collect(Collectors.joining());
+
+String[] to List        : List<String> list = Arrays.asList("foo", "bar", "baz");
+
+String to char[]        : mystring.toCharArray();
+
+String to Character[]   : mystring.chars().mapToObj(c -> (char)c).toArray(Character[]::new);
+
+char[] to String        : String.valueOf(chararray)       OR   new String(chararray)
+
+Character[] to String   : Arrays.stream(characterobjectarray).map(String::valueOf).collect(Collectors.joining());
+
+char[] to List          : Stream<Character> myStreamOfCharacters = IntStream.range(0, myCharArray.length).mapToObj(i -> charArray[i]); List<Character> myListOfCharacters = myStreamOfCharacters.collect(Collectors.toList()); # convert to stream of characters and then convert it to list
+                                                  OR
+                          new String(chararray); List<Character> chars = mystring.chars().mapToObj(e->(char)e).collect(Collectors.toList());  # convert to string first and then convert to list
+
+List to char[]          : charlist.stream().map(String::valueOf).collect(Collectors.joining()).toCharArray();
+
+List to Character[]     : Arrays.asList(characterobjectarray)
+
+Character[] to char[]   : Stream.of(characterobjectarray).map(String::valueOf).collect(Collectors.joining()).toCharArray();
+
+char[] to Character[]   : new String(chararray) ->and then-> mystring.chars().mapToObj(c -> (char)c).toArray(Character[]::new);  # convert to a string first and then convert to charobj array
+
+
+//Data type conversions
+char to int : char ch = Character.forDigit(primitiveintvariable, 10); // 10 is the RADIX
+
+int to char : int i = Character.digit(charvariable, 10); // 10 is the RADIX
+
+char to ascii : int ascii = (int) character;
+
+ascii to char : char c = (char) asciiintegervariable;
+
+Integer to String : Integer.toString(intvalue)  OR String.valueOf(intvalue)
+
+String to Integer : Integer.parseInt(strvalue)  OR Integer.valueOf(strvalue)
+hav
+Integer to int    : integerobject.intValue()
+
+String to char: Character.toString(ch) or String.valueOf(ch);
+//for single letter str.charAt(0)
+
+char to String: String.valueOf(ch)
+
+
+//Check if a String is numeric
+
+mystring.matches("-?\\d+(\\.\\d+)?")    # this returns true or false based on string is numeric or not
+
+mystring.chars().allMatch(Character::isDigit) # # this returns true or false based on string is numeric or not...checks only positive values
+
+//Check if Character is letter or digit, takes in chars and returns true of false
+        Character.isDigit('1')
+        Character.isLetter('f')
+        Character.isLetterOrDigit('o')
+        Character.isWhitespace(' ')
+        Character.isAlphabetic('l')
+
+
+//String tricks
+
+    Remove all punctuation from string : mystring.replaceAll("[^a-zA-Z0-9\\s]", "")
+
+    Split a string by space            : mystring.split("\\s")   OR match any number of spaces by mystring.split("\\s+") # this returns an array
+
+    Array to String                    : Arrays.toString(myarray)
+
+    Reverse a String                    : new StringBuilder(mystring).reverse().toString()
+
+
+//Combinations of a String
+    permutations("sunil").parallel().collect(Collectors.toSet()).stream().sorted().forEach(System.out::println);
+
+	public static Stream<String> permutations(String str) {
+    if (str.isEmpty()) {
+        return Stream.of("");
+    }
+    return IntStream.range(0, str.length()).boxed()
+            .flatMap(i -> permutations(str.substring(0, i) + str.substring(i + 1)).map(t -> str.charAt(i) + t));
+    }
+
+
+
+
+//Reverse an array
+
+Reverse integer array :  int[] revarray = IntStream.range(0, orgarray.length)
+                                                   .map(i -> orgarray[orgarray.length - 1 - i])
+                                                   .toArray();
+
+//Sorting
+
+Map sort by keys asc  :  mysortedlinkedhashmap = existinghashmap.entrySet().stream().
+                                                  sorted(Map.Entry.comparingByKey()).
+                                                  collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,(oldValue, newValue) -> oldValue,LinkedHashMap::new));
+                                                      OR
+		                 mysortedlinkedhashmap = existinghashmap.entrySet().stream().
+		                                         sorted(Map.Entry.comparingByKey()).
+		                                         forEachOrdered(entry -> mysortedlinkedhashmap.put(entry.getKey(), entry.getValue()));
+
+			    desc  : mysortedlinkedhashmap = existinghashmap.entrySet().stream().
+			                                    sorted(Map.Entry.comparingByKey().reversed()).
+			                                    forEachOrdered(entry -> mysortedlinkedhashmap.put(entry.getKey(), entry.getValue()));
+
+Map sort by values asc: mysortedlinkedhashmap = existinghashmap.entrySet().stream().
+                                                sorted(Map.Entry.comparingByValue()).
+                                                collect(Collectors.toMap(Map.Entry::getKey,
+                                                                         Map.Entry::getValue,
+                                                                         (oldValue, newValue) -> oldValue,LinkedHashMap::new));
+                                                      OR
+                        mysortedlinkedhashmap = existinghashmap.entrySet().stream().
+                                                sorted(Map.Entry.comparingByValue()).
+                                                forEachOrdered(entry ->mysortedlinkedhashmap.put(entry.getKey(), entry.getValue()));
+
+                desc  : mysortedlinkedhashmap = existinghashmap.entrySet().stream().
+                                                sorted(Map.Entry.comparingByValue().reversed()).
+                                                forEachOrdered(entry -> mysortedlinkedhashmap.put(entry.getKey(), entry.getValue()));
+
+Stream 2d array:
+       Double[][] doubled2D = Arrays.stream(array2D)
+                                    .map(y -> Arrays.stream(y)
+                                                    .map(x -> 2*x)
+                                                    .toArray(Double[]::new))
+                                    .toArray(Double[][]::new);
+
+COMPARATOR STYLES
+//Old style
+public class EmployeeComparator implements Comparator<Employee> {
+  @Override
+  public int compare(Employee emp1, Employee emp2) {
+    return (emp1.getName().compareTo(emp2.getName()));
+  }
+}
+    Collections.sort(employeeList, new EmployeeComparator());
+    employeeList.forEach(System.out::println);
+
+//New style
+//Using Lambdas
+    Comparator<Employee> empNameComparator = (Employee emp1, Employee emp2) -> {return (emp1.getName().compareTo(emp2.getName()));};
+    Collections.sort(employeeList, empNameComparator);
+    employeeList.forEach(System.out::println);
+
+//Using static method comparing() or method reference
+     Comparator<Employee> comparatorObj=Comparator.comparing(Employee emp -> emp.getName());
+     Collections.sort(employeeList, comparatorObj);
+     employeeList.forEach(System.out::println);
+	  OR
+      Comparator<Employee> comparatorObj=Comparator.comparing(Employee::getName);
+      Collections.sort(employeeList, comparatorObj);
+      employeeList.forEach(System.out::println);
+
+// Multiple sort order, The second level sort order gets used if the first level sort criteria is indecisive.
+      Comparator<Employee> empNameComparator = Comparator.comparing(Employee::getName).thenComparing(Employee::getAge);
+      Collections.sort(employeeList, empNameComparator);
+      employeeList.forEach(System.out::println);
+
+
+
+SORTING
+
+Sorting an ArrayList
+//Ascending
+Collections.sort(myarrayList); //with Collections class
+OR
+myarrayList.sort(Comparator.naturalOrder()); //with Comparator natural order
+OR
+list.sort((o1, o2) -> o1.getItem().getValue().compareTo(o2.getItem().getValue()));   //Using Lambda
+OR
+list.sort(Comparator.comparing(o -> o.getItem().getValue()));
+OR
+list.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList());   //Using stream.sorted returns a new list
+
+//Descending
+Comparator mycomparator = Collections.reverseOrder();
+Collections.sort(myarrayList,mycomparator); //with Comparator reverse order
+OR
+myarrayList.sort(Comparator.reverseOrder());
+OR
+Comparator<Employee> empNameComparator = Comparator.comparing(Employee::getName).reversed();
+Collections.sort(employeeList, empNameComparator);
+OR
+li.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());   //Using stream.sorted returns a new list
+OR
+list.stream().sorted(Comparator.comparing(Student::getAge).reversed())  //Using sorted and reversed
+
+
+//
+
+
+//Get Max value
+
+//Get Min Value
+
+
+// Arrays tricks
+
+
+// Arrays tricks
+
+    Array to String            : Arrays.toString(myarray)
+
+	2D Array to String         : Arrays.deepToString(2darray)
+
+	Print 2D Array matrix      : Stream.of(2darray).map(Arrays::toString).forEach(System.out::println);
+
+	Print 2D array             : Arrays.deepToString(names)
+
+	Join a String Array        : String.join("delimiter", stringarray);
+
+    Sort an Array              : Arrays.sort(myarray)
+
+    Fill array with some value : Arrays.fill(myarray, value)  OR Arrays.fill(myarray, from, to, value)
+
+    Binary search              : Arrays.binarySearch(array, key) Searches for the specified key value in an array. The return
+                                                                 value is the index of the element that matches the key. The method
+                                                                 returns -1 if the key can’t be found. The array and the key must be
+    															 of the same type and can be any primitive type or an object.
+
+    Deep Copy a 1D Array       : Arrays.copyOf(myarray, myarray.length) OR Arrays.copyOfRange(int[] original_array, int from_index, int to_index)
+
+                                #  Arrays.copyOf(..) is a 'cheap' deep copy for both primitive and 1-D Object arrays. But any data array more complex and it is found out. Maybe it should be called a semi-deep copy.
+
+    Deep Copy a 2D array       :      static <T> T[][] deepCopy(T[][] matrix) {
+                                      return java.util.Arrays.stream(matrix).map(el -> el.clone()).toArray($ -> matrix.clone());
+                                      }
+                                             OR
+
+                                      int arr[][]=new int[originalarray.length][originalarray[0].length];
+                                      for(int a=0;a<originalarray.length;a++){
+                                      for(int b=0;b<originalarray[0].length;b++)
+                                      { arr[a][b]=originalarray[a][b];} }
+
+
+
+
+
+// Explore TreeMap, TreeSet
+
+
+//String library methods
+
+Remove all punctuation from string : mystring.replaceAll("[^a-zA-Z0-9\\s]", "")
+
+Split a string by space            : mystring.split("\\s")   OR match any number of spaces by mystring.split("\\s+") # this returns an array
+
+// Length
+int length()       // returns the length of the String
+boolean isEmpty()  // same as thisString.length == 0
+
+// Comparison
+boolean equals(String another) // CANNOT use '==' or '!=' to compare two Strings in Java
+boolean equalsIgnoreCase(String another)
+int compareTo(String another)  // return 0 if this string is the same as another;
+                               // <0 if lexicographically less than another; or >0
+int compareToIgnoreCase(String another)
+boolean startsWith(String another)
+boolean startsWith(String another, int fromIndex)  // search begins at fromIndex
+boolean endsWith(String another)
+ 
+// Searching & Indexing
+int indexOf(String search)
+int indexOf(String search, int fromIndex)
+int indexOf(int character)
+int indexOf(int character, int fromIndex)      // search forward starting at fromIndex
+int lastIndexOf(String search)
+int lastIndexOf(String search, int fromIndex)  // search backward starting at fromIndex
+int lastIndexOf(int character)
+int lastIndexOf(int character, int fromIndex)
+ 
+// Extracting a char or part of the String (substring)
+char charAt(int index)              // index from 0 to String's length - 1
+String substring(int fromIndex)
+String substring(int fromIndex, int endIndex)  // exclude endIndex
+ 
+// Creating a new String or char[] from the original (Strings are immutable!)
+String toLowerCase()
+String toUpperCase()
+String trim()          // create a new String removing white spaces from front and back
+String replace(char oldChar, char newChar)  // create a new String with oldChar replaced by newChar
+String concat(String another)               // same as thisString + another
+char[] toCharArray()                        // create a char[] from this string
+void getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin)  // \ into dst char[]
+ 
+// Static methods for converting primitives to String
+static String ValueOf(type arg)  // type can be primitives or char[]
+ 
+// Static method resulted in a formatted String using format specifiers
+static String format(String formattingString, Object... args)   // same as printf()
+ 
+// Regular Expression (JDK 1.4)
+boolean matches(String regexe)
+String replaceAll(String regexe, String replacement)
+String replaceAll(String regexe, String replacement)
+String[] split(String regexe)             // Split the String using regexe as delimiter,
+                                          // return a String array
+String[] split(String regexe, int count)  // for count times only
+
+Java 8 - Map merge() method
+
+The signature of the java.util.Map.merge(key, value, BiFunction) method is as follows:
+
+default V merge(K key,
+                V value,
+                BiFunction<? super V,? super V,? extends V> remappingFunction)
+
+Parameters
+K key: the key with which to associate the result
+V value: non-null value to merge with existing value or to be used as the new value if there is no current mapping or the mapping is null
+BiFunction remappingFunction: a two argument function to be used for calculation of the new mapping from the old value and given value. If the function returns null the mapping is removed.
+
+Example 1:
+        List<String> team1 = new ArrayList<>();
+        List<String> currentValue = new ArrayList<>();
+        team1.addAll(Arrays.asList("sunil","mike","pudingi"));
+        currentValue.addAll(Arrays.asList("pudingi"));
+        Map<String,List<String>> map = new HashMap<>();
+        map.put("team1", team1);
+        map.merge("team1", currentValue, (existingValue, newValue)-> { existingValue.removeAll(newValue); return existingValue;});
+        System.out.println(map);
+		Output:
+		    {team1=[sunil, mike]}
+Example 2:
+        Map<String, Integer> prices = new HashMap<>();
+        System.out.println("Prices map: " + prices);
+
+        // Integer::sum(a,b) is perfect two-argument
+        // function (BiFunction)
+        prices.merge("fruits", 3, Integer::sum);
+        prices.merge("fruits", 5, Integer::sum);
+        System.out.println("Prices map: " + prices);
+
+        // null removes mapping for the key:
+        prices.merge("fruits", 7, (existingValue, newValue) -> {return null;});
+        System.out.println("Prices map: " + prices);
+
+        prices.put("veggies", null);
+        System.out.println("Prices map: " + prices);
+        // No need to handle initial null value:
+        prices.merge("veggies", 42, Integer::sum);
+        System.out.println("Prices map: " + prices);
+		Output:
+			Prices map: {}
+			Prices map: {fruits=8}
+			Prices map: {}
+			Prices map: {veggies=null}
+			Prices map: {veggies=42}
+
+Java 8 Streams - Collectors.toMap Examples
+
+The static overloaded methods, Collectors.toMap() return a Collector which produces a new instance of Map, populated with keys per provided keyMapper function and values per provided valueMap function.
+
+<T,K,U,M extends Map<K,U>> Collector<T,?,M> toMap(
+                                  Function<? super T,? extends K> keyMapper,
+                                  Function<? super T,? extends U> valueMapper,
+                                  BinaryOperator<U> mergeFunction,
+                                  Supplier<M> mapSupplier)
+
+Parameters
+Function keyMapper: A mapping function to produce the map keys for each input stream element.
+
+Function valueMapper: A mapping function to produce the map values for each input stream element.
+
+BinaryOperator mergeFunction: This is optional. The usability of merge function is to handle the situation of duplicate Map keys. Using BinaryOperator we can merge the values of duplicate keys. If we do not pass this argument, then by default it throws IllegalStateException in case of duplicate keys. This takes in a lambda with two input parameters existingValue and newValue and returns some computedValue.
+
+Supplier mapSupplier: This is optional. It returns a Map in which data is filled as key/value. If we do not pass map supplier then the default supplier will return HashMap. If we want to get any other instance such as LinkedHashMap, we need to pass supplier as LinkedHashMap::new.
+
+Example:
+
+        Stream<String> s = Stream.of("apple", "banana", "apricot", "orange",
+                            "apple");
+        LinkedHashMap<Character, String> m = s.collect(
+                            Collectors.toMap(s1 -> s1.charAt(0),
+                                                s1 -> s1,
+                                                (existingValue, newValue) -> existingValue + "|" + newValue,
+                                                LinkedHashMap::new));
+		Output:
+			{a=apple|apricot|apple, b=banana, o=orange}
+
+
+
+Java 8 Streams - Collectors.groupingBy Examples
+
+<T,K,D,A,M extends Map<K,D>> Collector<T,?,M> groupingBy(
+                                Function<? super T,? extends K> classifier,
+                                Supplier<M> mapFactory,
+                                Collector<? super T,A,D> downstream)
+
+Parameters
+classifier: This function returned value is used as map key. Inputs to this function are stream elements.
+
+downstream: This collector transforms the map values to type D.
+
+mapFactory: This function creates the desired Map implementation.
+
+Example 1:
+        Student s1 = new Student("Ram", "A", 20);
+        Student s2 = new Student("Shyam", "B", 22);
+        Student s3 = new Student("Mohan", "A", 22);
+        Student s4 = new Student("Mahesh", "C", 20);
+        Student s5 = new Student("Krishna", "B", 21);
+        List<Student> list = Arrays.asList(s1,s2,s3,s4,s5);
+        //Group Student on the basis of ClassName
+        System.out.println("----Group Student on the basis of ClassName----");
+        Map<String, List<Student>> stdByClass = list.stream()
+                    .collect(Collectors.groupingBy(Student::getClassName));
+        Output:
+		----Group Student on the basis of ClassName----
+		Key:A  Ram,Mohan
+		Key:B  Shyam,Krishna
+		Key:C  Mahesh
+
+Example 2:
+        Stream<String> s = Stream.of("apple", "banana", "orange");
+
+groupingBy(classifier)
+        Map<Integer, List<String>> map = s.collect(
+                            Collectors.groupingBy(String::length));
+		output:
+		{5=[apple], 6=[banana, orange]}
+groupingBy(classifier, downstream)
+        Map<Integer, Long> map = s.collect(
+                            Collectors.groupingBy(String::length, Collectors.counting()));
+		output:
+		{5=1, 6=2}
+
+groupingBy(classifier, mapFactory, downstream)
+        ConcurrentHashMap<Integer, Long> map = s.collect(
+                            Collectors.groupingBy(String::length,
+                                                ConcurrentHashMap::new,
+                                                Collectors.counting()));
+			output:
+			{5=1, 6=2}
+
+//Inline declarations
+int[] myIntArray = new int[3];
+int[] myIntArray = {1, 2, 3};
+int[] myIntArray = new int[]{1, 2, 3};
+
+// Since Java 8. Doc of IntStream: https://docs.oracle.com/javase/8/docs/api/java/util/stream/IntStream.html
+
+int [] myIntArray = IntStream.range(0, 100).toArray(); // From 0 to 99
+int [] myIntArray = IntStream.rangeClosed(0, 100).toArray(); // From 0 to 100
+int [] myIntArray = IntStream.of(12,25,36,85,28,96,47).toArray(); // The order is preserved.
+int [] myIntArray = IntStream.of(12,25,36,85,28,96,47).sorted().toArray(); // Sort
+
+String[] myStringArray = new String[3];
+String[] myStringArray = {"a", "b", "c"};
+String[] myStringArray = new String[]{"a", "b", "c"};
+
+
+List<Integer> ScoreList = Arrays.asList(95,85,93,91);
+ArrayList<Integer> x = new ArrayList<Integer>(Arrays.asList(1,2));
+ArrayList<Long> longList = new ArrayList<Long>(Arrays.asList(1L, 2L, 3L));
+List<Double> list = new ArrayList<>(Arrays.asList(1.38, 2.56, 4.3));
+
+List<String> list = Arrays.asList(new String[]{"foo", "bar"});
+List<String> list = Stream.of("foo", "bar").collect(Collectors.toList());
+List<String> cities = new ArrayList() {{
+        add("New York");
+        add("Rio");
+        add("Tokyo");
+    }};
+
+Set<String> countries = new HashSet<String>() {
+        {
+           add("India");
+           add("USSR");
+           add("USA");
+        }
+    };
+
+Character[] JavaCharArray = {'r', 's', 't', 'u', 'v'};
+char[] JavaCharArray = {'r', 's', 't', 'u', 'v'};
+
+//Java 9
+List<String> list = List.of("foo", "bar", "baz");
+Set<String> set = Set.of("foo", "bar", "baz");
+
+
+double  --> Double.parseDouble(String);
+float   --> Float.parseFloat(String);
+long    --> Long.parseLong(String);
+int     --> Integer.parseInt(String);
+char    --> stringGoesHere.charAt(int position);
+short   --> Short.parseShort(String);
+byte    --> Byte.parseByte(String);
+boolean --> Boolean.parseBoolean(String);
+
+//Long to Integer
+Long l = 123L;
+Integer correctButComplicated = Integer.valueOf(l.intValue());
+Integer withBoxing = l.intValue();
+Integer terrible = (int) (long) l;
+
+String value = "975";
+Integer ival = Integer.valueOf(value);
+System.out.println(value + " (byte) " + ival.byteValue());
+System.out.println(value + " (int ) " + ival.intValue());
+System.out.println(value + " (shrt) " + ival.shortValue());
+System.out.println(value + " (long) " + ival.longValue());
+System.out.println(value + " (flt ) " + ival.floatValue());
+System.out.println(value + " (dbl ) " + ival.doubleValue());
+
+
+BigDecimal number = new BigDecimal("2.3423424666767E13");
+
+int myInt = number.intValue();
+double myDouble = number.doubleValue();
+
+// your purpose
+float myFloat = number.floatValue();
+
+
+//int to Double
+        int num = 99;
+
+1.  Double result = new Double(num);
+2.  Double result = Double.valueOf(num);
+3.  double result = num;
+
+//Converting int to float:
+        int i = 125;
+        float f = i;
+   Integer i = 85;
+   float f = i.floatValue();
+
+Convert int to long
+Long.valueOf(your_integer);
+Integer y = 1;
+long x = y.longValue();
+
+//long to int
+ long a = 230;
+ Math.toIntExact(a);
+
+	byte b=10;
+
+	short s= b;	//byte value is widened to short
+	int i=b;	//byte value is widened to int
+	long l=b;	//byte value is widened to long
+	float f=b;	//byte value is widened to float
+	double d=b;	//byte value is widened to double
+
+
+
+
+	double d =10.5;
+
+	byte b = (byte)d;		//Narrowing double to byte
+	short s= (short)d;		//Narrowing double to short
+	int i= (int)d;			//Narrowing double to int
+	long l= (long)d;		//Narrowing double to long
+	float f= (float)d;		//Narrowing double to float
+
+Double d = 0.5;
+float f = d.floatValue();
+
+public static Float convertToFloat(Double doubleValue) {
+    return doubleValue == null ? null : doubleValue.floatValue();
+}
+
+double d = 0.5;
+Double D = Double.valueOf(d);
+float f = D.floatValue();
+
+public static Float convertToFloat(double doubleValue) {
+    return (float) doubleValue;
+}
+
+
+
+If either operand is of type double, the other is converted to double.
+Otherwise, if either operand is of type float, the other is converted to float.
+Otherwise, if either operand is of type long, the other is converted to long.
+Otherwise, both operands are converted to type int.
+
